@@ -18,3 +18,4 @@ _site/
 # Python — Find out about yourself
 find_about_yourself/.venv/
 find_about_yourself/profiles.sqlite
+find_about_yourself/**/__pycache__/
