@@ -14,3 +14,7 @@ target/*
 !.vscode/launch.json
 !.vscode/extensions.json
 _site/
+
+# Python — Find out about yourself
+find_about_yourself/.venv/
+find_about_yourself/profiles.sqlite

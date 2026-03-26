@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find out about yourself</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding-top: 20px; padding-bottom: 40px; }
+    h2 { margin-bottom: 1em; }
+    hr { margin: 2em 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Find out about yourself</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" role="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h3>Tell us about you</h3>
+    <form class="form-horizontal" method="post" action="{{ url_for('save') }}">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="name">Name</label>
+        <div class="col-sm-10">
+          <input class="form-control" id="name" name="name" maxlength="100"
+                 value="{{ form_name or '' }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="age">Age</label>
+        <div class="col-sm-10">
+          <input class="form-control" id="age" name="age" type="number" min="0" max="150"
+                 value="{{ form_age or '' }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="address">Address</label>
+        <div class="col-sm-10">
+          <input class="form-control" id="address" name="address" maxlength="500"
+                 value="{{ form_address or '' }}" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default">Save</button>
+        </div>
+      </div>
+    </form>
+
+    <hr>
+
+    <h3>Look someone up</h3>
+    <form class="form-horizontal" method="get" action="{{ url_for('search') }}">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="search_name">Name</label>
+        <div class="col-sm-10">
+          <input class="form-control" id="search_name" name="name" maxlength="100"
+                 placeholder="Name to search" value="{{ search_query or '' }}">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default">Search</button>
+        </div>
+      </div>
+    </form>
+
+    {% if search_performed %}
+    <div class="search-result" style="margin-top: 1em;">
+      {% if found %}
+        <p class="text-success"><strong>Here he is</strong></p>
+        <dl class="dl-horizontal">
+          <dt>Name</dt>
+          <dd>{{ found.name }}</dd>
+          <dt>Age</dt>
+          <dd>{{ found.age }}</dd>
+          <dt>Address</dt>
+          <dd>{{ found.address }}</dd>
+        </dl>
+      {% else %}
+        <p class="text-muted">Hmm dont know who he is</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
