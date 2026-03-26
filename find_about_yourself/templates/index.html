@@ -88,6 +88,61 @@
       {% endif %}
     </div>
     {% endif %}
+
+    <hr>
+
+    <h3>About the app owner</h3>
+    <p class="text-muted">Details are loaded from the server when you ask.</p>
+    <div class="form-group">
+      <button type="button" class="btn btn-primary" id="fetch-owner-btn">Show app owner</button>
+      <span id="owner-loading" class="text-muted" style="display: none; margin-left: 0.5em;">Loading…</span>
+    </div>
+    <div id="owner-result" class="well" style="display: none; margin-top: 1em;">
+      <dl class="dl-horizontal" style="margin-bottom: 0;">
+        <dt>Name</dt>
+        <dd id="owner-name"></dd>
+        <dt>Residing in</dt>
+        <dd id="owner-residence"></dd>
+      </dl>
+    </div>
+    <p id="owner-error" class="text-danger" style="display: none;"></p>
   </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById("fetch-owner-btn");
+      var loading = document.getElementById("owner-loading");
+      var result = document.getElementById("owner-result");
+      var err = document.getElementById("owner-error");
+      var nameEl = document.getElementById("owner-name");
+      var resEl = document.getElementById("owner-residence");
+
+      btn.addEventListener("click", function () {
+        err.style.display = "none";
+        err.textContent = "";
+        loading.style.display = "inline";
+        btn.disabled = true;
+
+        fetch("{{ url_for('api_owner') }}", { headers: { "Accept": "application/json" } })
+          .then(function (r) {
+            if (!r.ok) throw new Error("Request failed");
+            return r.json();
+          })
+          .then(function (data) {
+            nameEl.textContent = data.name;
+            resEl.textContent = data.residence;
+            result.style.display = "block";
+          })
+          .catch(function () {
+            err.textContent = "Could not load owner details.";
+            err.style.display = "block";
+          })
+          .finally(function () {
+            loading.style.display = "none";
+            btn.disabled = false;
+          });
+      });
+    })();
+  </script>
 </body>
 </html>

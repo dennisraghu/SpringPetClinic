@@ -7,7 +7,11 @@ import sqlite3
 from contextlib import closing
 from pathlib import Path
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+
+# App owner (fixed data served by /api/owner)
+APP_OWNER_NAME = "Darth Vader"
+APP_OWNER_RESIDENCE = "Hollywood"
 
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE = os.environ.get("FIND_ABOUT_DB", str(BASE_DIR / "profiles.sqlite"))
@@ -88,6 +92,16 @@ def save():
         conn.commit()
     flash("Saved your details.", "success")
     return redirect(url_for("index"))
+
+
+@app.route("/api/owner", methods=["GET"])
+def api_owner():
+    return jsonify(
+        {
+            "name": APP_OWNER_NAME,
+            "residence": APP_OWNER_RESIDENCE,
+        }
+    )
 
 
 @app.route("/search", methods=["GET"])
